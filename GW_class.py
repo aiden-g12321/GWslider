@@ -65,12 +65,6 @@ with open('data/GW190519_data_dict.pkl', 'rb') as f:
 
 with open('data/simulated_GW.pkl', 'rb') as f:
     simulated_data = pickle.load(f)
-    simulated_data['H1']['strain'] *= 10
-    simulated_data['H1']['strain_whiten'] *= 10
-    simulated_data['H1']['strain_whitenbp'] *= 10
-    simulated_data['L1']['strain'] *= 10
-    simulated_data['L1']['strain_whiten'] *= 10
-    simulated_data['L1']['strain_whitenbp'] *= 10
 
 # class instantiation for real GW events
 GW150914 = GWSignals(signal_ref_params['GW150914'][1], GW150914_data)

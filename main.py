@@ -77,7 +77,7 @@ def checkbox_update(val):
         residual_line.set_ydata(residuals)
         residual_line.set_visible(True)
     else:   
-        residual_line.set_visible(False)  
+        residual_line.set_visible(False) 
 
     # update data which is plotted
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(slider_val, GW_signal, det)
@@ -87,8 +87,8 @@ def checkbox_update(val):
     ax.set_ylim(-1.1 * ymax, 1.1 * ymax)
     # Rebuild legend in same location
     ax.legend(loc='upper left')
-    # make new sliders
-    slider_axes, sliders = make_sliders(fig, checkboxes, GW_signal.comp_params, slider_val)
+    # make new slider
+    slider_axes, sliders = make_sliders(fig, checkboxes, GW_signal.comp_params, init_params)
     # remove initial position ticks on each slider
     for slider in sliders:
         slider.ax.get_lines()[0].set_visible(False)
