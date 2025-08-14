@@ -106,9 +106,22 @@ def make_checkboxes(fig):
 
 
 # function to make sliders
-def make_sliders(fig, checkboxes, init_comp_params):
-    # unpack parameter values
-    m1_init, m2_init, chi1_init, chi2_init = init_comp_params
+def make_sliders(fig, checkboxes, true_comp_params, init_comp_params= None):
+    # unpack true parameter values
+    m1_true, m2_true, chi1_true, chi2_true = true_comp_params
+    #unpack initial parameter values
+    if init_comp_params is not None:
+        m1_init, m2_init, chi1_init, chi2_init= init_comp_params
+    else: 
+        m1_init= np.random.uniform(m1_true - 10, m1_true + 10)
+        m2_init= np.random.uniform(m2_true - 10, m2_true + 10)
+        chi1_init= np.random.uniform(chi1_min, chi1_max)
+        chi2_init= np.random.uniform(chi2_min, chi2_max)
+    chirp_init = mchirp_from_mass1_mass2(m1_init, m2_init)
+    ratio_init = m2_init / m1_init
+    spin_plus_init = chi_eff(m1_init, m2_init, chi1_init, chi2_init)
+    spin_minus_init = chi_a(m1_init, m2_init, chi1_init, chi2_init)
+
     # get status of checkboxes
     chirp_q_checked, plus_minus_checked, real_data_checked, det_checked, residual_checked = checkboxes.get_status()
     # make axes for sliders
@@ -121,21 +134,19 @@ def make_sliders(fig, checkboxes, init_comp_params):
     
     # make sliders
     if chirp_q_checked:     
-        chirp_init = mchirp_from_mass1_mass2(m1_init, m2_init)
-        ratio_init = m2_init / m1_init
-        slider1 = Slider(ax=ax1, label=chirp_label, valmin=chirp_init - 10, valmax=chirp_init + 10, valinit=np.random.uniform(chirp_init - 10, chirp_init + 10), color= 'C2')
-        slider2 = Slider(ax=ax2, label=ratio_label, valmin=ratio_min, valmax=ratio_max, valinit=np.random.uniform(ratio_min, ratio_max),  color= 'C2')
+        chirp_true = mchirp_from_mass1_mass2(m1_true, m2_true)
+        slider1 = Slider(ax=ax1, label=chirp_label, valmin=chirp_true - 10, valmax=chirp_true + 10, valinit= chirp_init, color= 'C2')
+        slider2 = Slider(ax=ax2, label=ratio_label, valmin=ratio_min, valmax=ratio_max, valinit=ratio_init,  color= 'C2')
     else:
-        slider1 = Slider(ax=ax1, label=m1_label, valmin=m1_init - 10, valmax=m1_init + 10, valinit=np.random.uniform(m1_init - 10, m1_init + 10), color= 'C2')
-        slider2 = Slider(ax=ax2, label=m2_label, valmin=m2_init - 10, valmax=m2_init + 10, valinit=np.random.uniform(m2_init - 10, m2_init + 10),  color= 'C2')
+        slider1 = Slider(ax=ax1, label=m1_label, valmin=m1_true - 10, valmax=m1_true + 10, valinit= m1_init, color= 'C2')
+        slider2 = Slider(ax=ax2, label=m2_label, valmin=m2_true - 10, valmax=m2_true + 10, valinit= m2_init,  color= 'C2')
     if plus_minus_checked:
-        spin_plus_init = chi_eff(m1_init, m2_init, chi1_init, chi2_init)
-        spin_minus_init = chi_a(m1_init, m2_init, chi1_init, chi2_init)
-        slider3 = Slider(ax=ax3, label=spin_plus_label, valmin=spin_plus_min, valmax=spin_plus_max, valinit= np.random.uniform(spin_plus_min, spin_plus_max),  color= 'C2')
-        slider4 = Slider(ax=ax4, label=spin_minus_label, valmin=spin_minus_min, valmax=spin_minus_max, valinit=np.random.uniform(spin_minus_min, spin_minus_max),  color= 'C2')
+    
+        slider3 = Slider(ax=ax3, label=spin_plus_label, valmin=spin_plus_min, valmax=spin_plus_max, valinit= spin_plus_init,  color= 'C2')
+        slider4 = Slider(ax=ax4, label=spin_minus_label, valmin=spin_minus_min, valmax=spin_minus_max, valinit= spin_minus_init,  color= 'C2')
     else:
-        slider3 = Slider(ax=ax3, label=chi1_label, valmin=chi1_min, valmax=chi1_max, valinit=np.random.uniform(chi1_min, chi1_max),  color= 'C2')
-        slider4 = Slider(ax=ax4, label=chi2_label, valmin=chi2_min, valmax=chi2_max, valinit=np.random.uniform(chi2_min, chi2_max),  color= 'C2')
+        slider3 = Slider(ax=ax3, label=chi1_label, valmin=chi1_min, valmax=chi1_max, valinit= chi1_init,  color= 'C2')
+        slider4 = Slider(ax=ax4, label=chi2_label, valmin=chi2_min, valmax=chi2_max, valinit= chi2_init,  color= 'C2')
     
     slider5 = Slider(ax=ax5, label=amp_label, valmin=0, valmax=150, valinit= 1,  color= '0.65')
     slider6 = Slider(ax=ax6, label=phase_label, valmin= -np.pi, valmax= np.pi, valinit= 0,  color= '0.65')
@@ -151,7 +162,7 @@ def make_sliders(fig, checkboxes, init_comp_params):
 # make button to go to correct (or MAP) parameter values
 def make_button(fig):
     button_ax = fig.add_axes(button_rect)
-    return Button(button_ax, 'Go to Reference Parameters', hovercolor='0.975')
+    return Button(button_ax, 'Go to True Parameters', hovercolor='0.975')
 
 
 # function to get component parameters from sliders and checkboxes

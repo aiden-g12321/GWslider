@@ -49,6 +49,7 @@ chi_text = fig.text(0.35, 0.35, rf'$\rho = {round(SNRmax, 3)}$')
 def checkbox_update(val):
     # store current parameter values
     global slider_axes, sliders
+    slider_val= get_comp_params(sliders)
     # remove old sliders
     remove_sliders(slider_axes, sliders)
     # store current detector 
@@ -63,14 +64,14 @@ def checkbox_update(val):
     if not real_data_checked:
         global GW_signal
         GW_signal = GW_simulated
-        fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
+        fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(slider_val, GW_signal, det)
         data_line.set_xdata(times)
         data_line.set_ydata(data)
         ymax = np.max(np.abs(data))
         ax.set_xlim(-0.15, 0.)
         ax.set_ylim(-1.1 * ymax, 1.1 * ymax)
     if residuals_checked:
-        fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
+        fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(slider_val, GW_signal, det)
         residuals= residual_func(data, fit)
         residual_line.set_xdata(times)
         residual_line.set_ydata(residuals)
@@ -79,7 +80,7 @@ def checkbox_update(val):
         residual_line.set_visible(False)  
 
     # update data which is plotted
-    fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
+    fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(slider_val, GW_signal, det)
     data_line.set_xdata(times)
     data_line.set_ydata(data)
     ymax = np.max(np.abs(data))
@@ -87,7 +88,7 @@ def checkbox_update(val):
     # Rebuild legend in same location
     ax.legend(loc='upper left')
     # make new sliders
-    slider_axes, sliders = make_sliders(fig, checkboxes, GW_signal.comp_params)
+    slider_axes, sliders = make_sliders(fig, checkboxes, GW_signal.comp_params, slider_val)
     # remove initial position ticks on each slider
     for slider in sliders:
         slider.ax.get_lines()[0].set_visible(False)
