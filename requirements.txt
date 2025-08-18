@@ -1,0 +1,9 @@
+h5py==3.12.1
+interpolation==2.2.7
+matplotlib==3.8.1
+numba==0.60.0
+numpy==2.3.2
+PyCBC==2.7.2
+readligo==0.6.1
+scipy==1.16.1
+wget==3.2
