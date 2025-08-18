@@ -5,5 +5,5 @@ numba==0.60.0
 numpy>=1.22,<2.1
 PyCBC==2.7.2
 readligo==0.6.1
-scipy==1.16.1
+scipy>=1.16.0
 wget==3.2
