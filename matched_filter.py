@@ -29,7 +29,6 @@ def matched_filter(template, data, time, data_psd, fs):
         float: template phase which maximizes SNR
         float: template offset which maximizes SNR
     """
-
     # get the fourier frequencies of data for when we fft (for dividing by psd)
     datafreq = np.fft.fftfreq(template.size)*fs
     df = np.abs(datafreq[1] - datafreq[0])
@@ -38,7 +37,6 @@ def matched_filter(template, data, time, data_psd, fs):
     # compute the template and data ffts.
     template_fft = np.fft.fft(template*dwindow) / fs
     data_fft = np.fft.fft(data*dwindow) / fs
-
     # use the larger psd of the data calculated earlier for a better calculation
     # power_vec = list(map(data_psd, np.abs(datafreq)))
     power_vec = data_psd(np.abs(datafreq))
@@ -84,7 +82,7 @@ def matched_filter(template, data, time, data_psd, fs):
     phase = -np.angle(SNR_complex[indmax])
     offset = (indmax-peaksample)
 
-    return SNRmax, timemax, d_eff, horizon, phase, offset
+    return SNRmax, timemax, d_eff, horizon, phase, offset, datafreq
 
 
 
