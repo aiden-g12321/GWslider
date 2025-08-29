@@ -1,6 +1,7 @@
 '''This file stores constants used throughout the slider program.'''
 
-
+import pickle
+from numpy.fft import rfftfreq
 import numpy as np
 from pycbc.conversions import mchirp_from_mass1_mass2, chi_eff, chi_a
 
@@ -71,16 +72,40 @@ DL_SI = DL * (1.e6) * pc_SI
 
 
 # set window size for plotting and generating waveforms
-window_min = -0.22  # plot beginning 0.2 sec before merger
-window_max = 0.03  # plot ending 0.05 sec after merger
+#window_min = -0.22  # plot beginning 0.2 sec before merger
+#window_max = 0.03  # plot ending 0.05 sec after merger
+
+window_min = -0.16
+window_max= 0.16
 
 # define frequency bins
 f_min = 16.
-f_max = 1024.
-Nf = 2**14 + 1
+#f_max = 1024.
+f_max= 2048.
+#Nf = 2**14 + 1
+Nf= 65537
 freqs_full = np.linspace(0., f_max, Nf)
 freqs_indexes = np.where(freqs_full > f_min)
-freqs = freqs_full[freqs_indexes]
+
+#get data freq
+with open('data/GW150914_data_dict.pkl', 'rb') as f:
+    GW150914_data = pickle.load(f)
+#choose detector 
+det= 'H1'
+#get time domain info from dictionary
+dt = GW150914_data['dt']
+fs = GW150914_data['fs']
+strain = GW150914_data[det]['strain']
+N = len(strain)
+#data frequencies
+freqs= rfftfreq(N,dt)
+freqs_for_waveform = freqs[np.where(freqs>f_min)]
+
+#attempt at padding freqs
+freqs_padded = freqs_full.copy()
+freqs_padded[freqs_padded < f_min] = 0.0
+
+#freqs = freqs_full[freqs_indexes]
 df = freqs[1] - freqs[0]
 
 

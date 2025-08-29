@@ -82,7 +82,7 @@ def matched_filter(template, data, time, data_psd, fs):
     phase = -np.angle(SNR_complex[indmax])
     offset = (indmax-peaksample)
 
-    return SNRmax, timemax, d_eff, horizon, phase, offset, datafreq
+    return SNRmax, timemax, d_eff, horizon, phase, offset
 
 
 
@@ -167,6 +167,7 @@ def calculate_matched_filter(template_p, total_data, det, t_amount=4):
     template_p = template_p[time_filter_window]
 
     # define the template using only the plus polarization
+    #this is in time domain
     template = template_p
 
     # loop over the detectors'
