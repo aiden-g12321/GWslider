@@ -14,8 +14,8 @@ fig.subplots_adjust(left=0.3, bottom=0.3, right=0.95, top=0.95)
 checkboxes, buttons, buttons1, buttons2, buttons3, buttons4, buttons5, buttons6, buttons7 = make_checkboxes(fig)
 
 # start off using simulated data
-#GW_signal = GW_simulated
-GW_signal= GW150914
+GW_signal = GW_simulated
+# GW_signal= GW150914
 # start off with Hanford detector 
 det = 'H1'
 # make sliders

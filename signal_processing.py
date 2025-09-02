@@ -38,7 +38,7 @@ def whiten(template_FD, interp_psd, dt, phase_shift=0, time_shift=0):
     hf = hf * np.exp(-1.j * 2 * np.pi * time_shift * freqs - 1.j * phase_shift)
     norm = 1./np.sqrt(1./(dt*2))
     white_hf = hf / np.sqrt(interp_psd(freqs)) * norm
-    white_ht = np.fft.irfft(white_hf, n= len(white_hf))
+    white_ht = np.fft.irfft(white_hf, n= len(white_hf)*2-1)
     return white_ht
 
 
