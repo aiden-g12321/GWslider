@@ -7,7 +7,7 @@ from signal_processing import whiten, bandpass
 import matplotlib.pyplot as plt
 from widgets import *
 from template import get_template
-
+import constants as c
 
 def matched_filter(template, data, time, data_psd, fs):
     """Runs the matched filter calculation given a specific real template, strain
@@ -30,20 +30,27 @@ def matched_filter(template, data, time, data_psd, fs):
         float: template offset which maximizes SNR
     """
     # get the fourier frequencies of data for when we fft (for dividing by psd)
-    datafreq = np.fft.fftfreq(template.size)*fs
-    df = np.abs(datafreq[1] - datafreq[0])
+
+
+    #datafreq = np.fft.fftfreq(template.size)*fs
+    datafreq= c.freqs
+    #df = np.abs(datafreq[1] - datafreq[0])
     # for taking the fft of our template and data
-    dwindow = tukey(template.size, alpha=1./4)
+    #dwindow = tukey(template.size, alpha=1./4)
+    dwindow= tukey(data.size, alpha= 1./4)
+
     # compute the template and data ffts.
-    template_fft = np.fft.fft(template*dwindow) / fs
-    data_fft = np.fft.fft(data*dwindow) / fs
+
+    #template_fft = np.fft.fft(template*dwindow) / fs
+    data_fft = np.fft.rfft(data*dwindow) / fs
+    
     # use the larger psd of the data calculated earlier for a better calculation
     # power_vec = list(map(data_psd, np.abs(datafreq)))
     power_vec = data_psd(np.abs(datafreq))
 
     # -- Zero out negative frequencies
-    negindx = np.where(datafreq<0)
-    data_fft[negindx] = 0
+    #negindx = np.where(datafreq<0)
+    #data_fft[negindx] = 0
 
     # -- Calculate the matched filter output in the time domain: Multiply
     # the Fourier Space template and data, and divide by the noise power in
@@ -51,14 +58,14 @@ def matched_filter(template, data, time, data_psd, fs):
     # the filter output puts it back in the time domain, so the result will
     # be plotted as a function of time off-set between the template and the
     # data:
-    optimal = data_fft * template_fft.conjugate() / power_vec
-    optimal_time = 4 * np.fft.ifft(optimal) * fs
+    optimal = data_fft * template.conjugate() / power_vec
+    optimal_time = 4 * np.fft.irfft(optimal) * fs
 
     # -- Normalize the matched filter output: Normalize the matched filter
     # output so that we expect an average value of 1 at times of just noise.  Then,
     # the peak of the matched filter output will tell us the
     # signal-to-noise ratio (SNR) of the signal.
-    sigmasq = 2 * (template_fft * template_fft.conjugate() / power_vec).sum() * df
+    sigmasq = 2 * (template* template.conjugate() / power_vec).sum() * df
     sigma = np.sqrt(np.abs(sigmasq))
     SNR_complex = optimal_time/sigma
 
@@ -87,7 +94,8 @@ def matched_filter(template, data, time, data_psd, fs):
 
 
 
-def get_shifted_data(template_p, fband, filter_data, data_psd, dt):
+def get_shifted_data(template, fband, filter_data, data_psd, dt):
+    #first variable was tempalte_p
     """Obtains data shifts of templates and residual data after having found the
     best fit phase and offsets for the template.
 
@@ -112,10 +120,9 @@ def get_shifted_data(template_p, fband, filter_data, data_psd, dt):
     d_eff = filter_data['d_eff']
     phase = filter_data['phase']
     offset = filter_data['offset']
-
     # whiten and bandpass template_p for plotting- also applying phase shift,
     # amplitude scale
-    template_whitened = whiten(template_p / d_eff, data_psd, dt,
+    template_whitened = whiten(template / d_eff, data_psd, dt,
                                phase_shift=phase, time_shift=(offset * dt))
     template_match = bandpass(template_whitened, fband, 1. / dt)
 
@@ -124,7 +131,8 @@ def get_shifted_data(template_p, fband, filter_data, data_psd, dt):
 
 
 # calculate matched filter between actual template
-def calculate_matched_filter(template_p, total_data, det, t_amount=4):
+def calculate_matched_filter(template, total_data, det, t_amount=4):
+    #change first vairable from template_p (time domain) to FD_waveform (template) for consistency 
     """Calculates the best-fit template phase, offset, d_eff, horizon, and SNRmax
     values for both detectors on a given stretch of data given the desires
     template. Also can plot template shifts/residual data and print the
@@ -143,6 +151,8 @@ def calculate_matched_filter(template_p, total_data, det, t_amount=4):
     Returns:
         dict: dictionary of parameters found and residual data for each detector
     """
+    #template_p= np.fft.irfft(template)
+
 
     # these specific values are defined in the paper
     fband = [35.0, 350.0]
@@ -164,11 +174,11 @@ def calculate_matched_filter(template_p, total_data, det, t_amount=4):
     time_filter_window = np.where((time <= time_center + data_time_window * .5) &
                                   (time >= time_center - data_time_window * .5))
     time_filtered = time[time_filter_window]
-    template_p = template_p[time_filter_window]
+    #template_p = template_p[time_filter_window]
 
     # define the template using only the plus polarization
     #this is in time domain
-    template = template_p
+   # template = template_p
 
     # loop over the detectors'
     strain = total_data[det]['strain'][time_filter_window]
@@ -191,7 +201,7 @@ def calculate_matched_filter(template_p, total_data, det, t_amount=4):
 
     # get residuals and whitened data/template
     template_wbp = get_shifted_data(
-        template_p, fband, filter_data[det], data_psd, dt)
+        template, fband, filter_data[det], data_psd, dt)
     
     return template_wbp, strain_whitenbp, time_filtered - time_center, SNRmax, 1 / d_eff, phase
 

@@ -78,6 +78,10 @@ class Waveform:
         # apply hyperbolic tangent window
         #windowed_waveform_FD = self.tanh_window * waveform_FD
         # pad with zeros down to DC component
+        #N= 131072
+        #full_FD_waveform = np.zeros(N, dtype='complex')
+        #full_FD_waveform[-waveform_FD:] = waveform_FD
+
         full_FD_waveform = np.zeros(self.num_freqs, dtype='complex')
         full_FD_waveform[-self.num_freqs_waveform:] = waveform_FD
         return full_FD_waveform
@@ -92,10 +96,10 @@ class Waveform:
         return waveform_TD
     
 
-    # get signal in time-domain given parameters
-    def get_TD_waveform(self, params, phic):
-        waveform_FD = self.get_FD_waveform(params, phic)
-        return self.iFFT_waveform(waveform_FD)
+    # # get signal in time-domain given parameters
+    # def get_TD_waveform(self, params, phic):
+    #     waveform_FD = self.get_FD_waveform(params, phic)
+    #     return self.iFFT_waveform(waveform_FD)
 
 
 # instantiate waveform class for frequency bins (defined in constants.py)
@@ -106,7 +110,7 @@ def get_template(comp_params, data_dict):
     dt = data_dict['dt']
     fs = data_dict['fs']
 
-    fig_template = waveform.get_TD_waveform(comp_params, 0.)
+    fig_template = waveform.get_FD_waveform(comp_params, 0.)
     # fig_template = np.array([waveform.times, waveform.get_TD_waveform(comp_params, 0.0)]).T 
     # times_interp = np.linspace(waveform.times[0], waveform.times[-1], 6000)
     # waveform_interp = interp1d(fig_template[:, 0], fig_template[:, 1])(times_interp)
