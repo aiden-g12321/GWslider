@@ -31,11 +31,13 @@ def whiten(template_FD, interp_psd, dt, phase_shift=0, time_shift=0):
     # whitening: transform to freq domain, divide by square root of psd, then
     # transform back, taking care to get normalization right.
     #hf = np.fft.rfft(strain)
-    hf= template_FD
+    hf= template_FD  
     freqs = c.freqs
 
+    
     # apply time and phase shift
     hf = hf * np.exp(-1.j * 2 * np.pi * time_shift * freqs - 1.j * phase_shift)
+
     norm = 1./np.sqrt(1./(dt*2))
     white_hf = hf / np.sqrt(interp_psd(freqs)) * norm
     white_ht = np.fft.irfft(white_hf, n= len(white_hf)*2-1)

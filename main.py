@@ -177,7 +177,7 @@ def button_push_signals(event):
     button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
-    ax.set_xlim(0.30, 0.46)
+    ax.set_xlim(0.30, 0.5)
     ax.set_ylim(-1.1 * ymax, 1.1 * ymax)
     fig.canvas.draw_idle()
     return 

@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from widgets import *
 from template import get_template
 import constants as c
+from new_matched_filter import *
 
 def matched_filter(template, data, time, data_psd, fs):
     """Runs the matched filter calculation given a specific real template, strain
@@ -33,7 +34,7 @@ def matched_filter(template, data, time, data_psd, fs):
 
 
     #datafreq = np.fft.fftfreq(template.size)*fs
-    datafreq= c.freqs
+    datafreq= c.freqs  # multiply by fs?
     #df = np.abs(datafreq[1] - datafreq[0])
     # for taking the fft of our template and data
     #dwindow = tukey(template.size, alpha=1./4)
@@ -41,13 +42,15 @@ def matched_filter(template, data, time, data_psd, fs):
 
     # compute the template and data ffts.
 
+     #ADDED multply by dt instead of dividing by fs
+    template = template / fs
     #template_fft = np.fft.fft(template*dwindow) / fs
-    data_fft = np.fft.rfft(data*dwindow) / fs
+    data_fft = np.fft.rfft(data*dwindow) /fs
     
     # use the larger psd of the data calculated earlier for a better calculation
     # power_vec = list(map(data_psd, np.abs(datafreq)))
     power_vec = data_psd(np.abs(datafreq))
-
+    print(data_psd(freqs).min(), data_psd(freqs).max())
     # -- Zero out negative frequencies
     #negindx = np.where(datafreq<0)
     #data_fft[negindx] = 0
@@ -61,11 +64,13 @@ def matched_filter(template, data, time, data_psd, fs):
     optimal = data_fft * template.conjugate() / power_vec
     optimal_time = 4 * np.fft.irfft(optimal) * fs
 
+    
     # -- Normalize the matched filter output: Normalize the matched filter
     # output so that we expect an average value of 1 at times of just noise.  Then,
     # the peak of the matched filter output will tell us the
     # signal-to-noise ratio (SNR) of the signal.
-    sigmasq = 2 * (template* template.conjugate() / power_vec).sum() * df
+    ## multiply by 4 instead of 2  
+    sigmasq = 4 * (template* template.conjugate() / power_vec).sum() * df
     sigma = np.sqrt(np.abs(sigmasq))
     SNR_complex = optimal_time/sigma
 
@@ -79,7 +84,9 @@ def matched_filter(template, data, time, data_psd, fs):
     indmax = np.argmax(SNR)
     timemax = time[indmax]
     SNRmax = SNR[indmax]
-
+    
+    print('sigma', sigma)
+    print('SNRmax', SNRmax)
     # Calculate the effective distance
     d_eff = sigma / SNRmax
     # -- Calculate optimal horizon distance
@@ -120,11 +127,20 @@ def get_shifted_data(template, fband, filter_data, data_psd, dt):
     d_eff = filter_data['d_eff']
     phase = filter_data['phase']
     offset = filter_data['offset']
+    
     # whiten and bandpass template_p for plotting- also applying phase shift,
     # amplitude scale
     template_whitened = whiten(template / d_eff, data_psd, dt,
                                phase_shift=phase, time_shift=(offset * dt))
     template_match = bandpass(template_whitened, fband, 1. / dt)
+
+    hf = np.fft.rfft(template_whitened)
+    freqs = np.fft.rfftfreq(len(template_whitened), dt)
+    df = freqs[1] - freqs[0]
+
+    # Compute (h|h)
+    sigmasq = 4 * np.sum((hf * hf.conjugate()) / data_psd(freqs)) * df
+    print("Template norm (h|h):", sigmasq.real)
 
     return template_match
 
@@ -203,12 +219,14 @@ def calculate_matched_filter(template, total_data, det, t_amount=4):
     template_wbp = get_shifted_data(
         template, fband, filter_data[det], data_psd, dt)
     
+    
+    
     return template_wbp, strain_whitenbp, time_filtered - time_center, SNRmax, 1 / d_eff, phase
 
 
 # wrapper function for matched filter
 def wrapped_matched_filter(params, GW_signal, det):
-    return calculate_matched_filter(get_template(params, GW_signal.dictionary), GW_signal.dictionary, det)
+    return opt_template(get_template(params, GW_signal.dictionary), GW_signal.dictionary, det)
 
 def residual_func(data, fit):
     return data-fit

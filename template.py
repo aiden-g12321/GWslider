@@ -19,7 +19,7 @@ class Waveform:
         self.freqs_for_waveform = freqs_for_waveform
 
        #frequencies for FFt's
-        self.freqs = freqs
+        self.freqs = freqs 
         
         # initialize and store frequency-like objects
         self.num_freqs_waveform = len(self.freqs_for_waveform)
@@ -30,7 +30,7 @@ class Waveform:
         self.sampling_freq = 2 * self.freq_max
 
         # hyperbolic tangent window for iFFT, centered near f_min
-        self.tanh_window = np.tanh(self.freqs - np.array([self.freq_min] * self.num_freqs))
+        self.tanh_window = np.tanh(self.freqs_for_waveform - np.array([self.freq_min] * self.num_freqs_waveform))
 
         # time axis
         self.waveform_TD_full_shape = (self.num_freqs - 1) * 2
@@ -75,21 +75,21 @@ class Waveform:
     def get_FD_waveform(self, params, phic):
         h22 = self.get_h22(params, phic)
         waveform_FD = h22.amp * np.exp(-1.j * h22.phase)
+        
+
         # apply hyperbolic tangent window
-        #windowed_waveform_FD = self.tanh_window * waveform_FD
+        windowed_waveform_FD = self.tanh_window * waveform_FD
         # pad with zeros down to DC component
-        #N= 131072
-        #full_FD_waveform = np.zeros(N, dtype='complex')
-        #full_FD_waveform[-waveform_FD:] = waveform_FD
 
         full_FD_waveform = np.zeros(self.num_freqs, dtype='complex')
-        full_FD_waveform[-self.num_freqs_waveform:] = waveform_FD
+        full_FD_waveform[-self.num_freqs_waveform:] = windowed_waveform_FD
+        #full_FD_waveform[-self.num_freqs_waveform:] = waveform_FD
         return full_FD_waveform
 
 
     # inverse FFT waveform to go into time-domain
     def iFFT_waveform(self, waveform_FD):
-        waveform_TD = np.fft.irfft(waveform_FD)
+        waveform_TD = np.fft.irfft(waveform_FD) 
         # set merger to t = 0
         #waveform_TD = np.roll(waveform_TD, self.merger_index - np.argmax(waveform_TD))[:self.Nt]
         waveform_TD = np.roll(waveform_TD, self.merger_index - np.argmax(waveform_TD))
@@ -110,7 +110,7 @@ def get_template(comp_params, data_dict):
     dt = data_dict['dt']
     fs = data_dict['fs']
 
-    fig_template = waveform.get_FD_waveform(comp_params, 0.)
+    fig_template_tapered = waveform.get_FD_waveform(comp_params, 0.) 
     # fig_template = np.array([waveform.times, waveform.get_TD_waveform(comp_params, 0.0)]).T 
     # times_interp = np.linspace(waveform.times[0], waveform.times[-1], 6000)
     # waveform_interp = interp1d(fig_template[:, 0], fig_template[:, 1])(times_interp)
@@ -121,11 +121,11 @@ def get_template(comp_params, data_dict):
     # fig_template = resample(fig_template, int(len(fig_template)/4) )
 
     # apply a Tukey window to taper the ends of the template
-    taper_window = tukey(len(fig_template), alpha=.25)
-    fig_template_tapered = fig_template* taper_window
+    ##taper_window = tukey(len(fig_template), alpha=.25)
+    ##fig_template_tapered = fig_template* taper_window
 
     # -- Plot template before and after tapering
-    template_time = np.arange(0.25, 0.25+len(fig_template_tapered)*dt,dt)
+    ##template_time = np.arange(0.25, 0.25+len(fig_template_tapered)*dt,dt)
 
     # # Now we need to pad this with 0s to make it the same amount of time as the data
     # halfdatalen = int(16*fs)

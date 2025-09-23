@@ -102,6 +102,7 @@ freqs_full = np.linspace(0., f_max, Nf)
 freqs_indexes = np.where(freqs_full > f_min)
 #data frequencies
 #freqs= np.fft.fftfreq(N, dt) 
+
 freqs= np.load('freqs.npy')
 #freqs= rfftfreq(N,dt)
 freqs_for_waveform = freqs[np.where(freqs>f_min)]
@@ -112,7 +113,8 @@ freqs_padded[freqs_padded < f_min] = 0.0
 
 #freqs = freqs_full[freqs_indexes]
 #df = freqs[1] - freqs[0]
-df= 1/(N*dt)
+df = np.abs(freqs[1] - freqs[0])
+#df= 1/(N*dt)
 
 # bandpass frequencies 
 # these specific values are defined in the paper
