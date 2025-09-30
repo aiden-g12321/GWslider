@@ -13,10 +13,11 @@ from signal_processing import *
 
 class GWSignals:
 
-    def __init__(self, ref_params, dictionary):
+    def __init__(self, ref_params, dictionary, t_min, t_max):
         # dictionary which contains data for event
         self.dictionary = dictionary
-
+        self.t_min = t_min
+        self.t_max = t_max
         # reference parameters
         #add amplitude into reference params 
         self.mass1, self.mass2, self.chiPlus, self.chiMinus = ref_params
@@ -34,7 +35,7 @@ class GWSignals:
         self.max_mass2 = self.mass2 + 5.0
         self.min_chirp = mchirp_from_mass1_mass2(self.min_mass1, self.min_mass2)
         self.max_chirp = mchirp_from_mass1_mass2(self.max_mass1, self.max_mass2)
-
+       
 
 
 
@@ -67,18 +68,18 @@ with open('data/simulated_GW.pkl', 'rb') as f:
     simulated_data = pickle.load(f)
 
 # class instantiation for real GW events
-GW150914 = GWSignals(signal_ref_params['GW150914'][1], GW150914_data)
-GW190521 = GWSignals(signal_ref_params['GW190521'][1], GW190521_data)
-GW200129 = GWSignals(signal_ref_params['GW200129'][1], GW200129_data)
-GW200224 = GWSignals(signal_ref_params['GW200224'][1], GW200224_data)
-GW200311 = GWSignals(signal_ref_params['GW200311'][1], GW200311_data)
-GW191109 = GWSignals(signal_ref_params['GW191109'][1], GW191109_data)
-GW190828= GWSignals(signal_ref_params['GW190828'][1], GW190828_data)
-GW190519= GWSignals(signal_ref_params['GW190519'][1], GW190519_data)
+GW150914 = GWSignals(signal_ref_params['GW150914'][1], GW150914_data, 2.4, 2.5)
+GW190521 = GWSignals(signal_ref_params['GW190521'][1], GW190521_data, 2.0, 2.1)
+GW200129 = GWSignals(signal_ref_params['GW200129'][1], GW200129_data, 2.0, 2.1)
+GW200224 = GWSignals(signal_ref_params['GW200224'][1], GW200224_data, 1.95, 2.1)
+GW200311 = GWSignals(signal_ref_params['GW200311'][1], GW200311_data, 2.0, 2.2)
+GW191109 = GWSignals(signal_ref_params['GW191109'][1], GW191109_data, 1.95, 2.1)
+GW190828= GWSignals(signal_ref_params['GW190828'][1], GW190828_data, 2.0, 2.1)
+GW190519= GWSignals(signal_ref_params['GW190519'][1], GW190519_data, 2.0, 2.2)
 
 # GW_simulated = GWSignals(signal_ref_params['GW150914'][1], GW150914_data)
 
-GW_simulated = GWSignals(np.array([30., 20., 0., 0.]), simulated_data)
+GW_simulated = GWSignals(np.array([30., 20., 0., 0.]), simulated_data, -0.1, 0.1)
 
 
 

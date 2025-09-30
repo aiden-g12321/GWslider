@@ -6,7 +6,7 @@ from scipy.signal.windows import tukey
 from template import *
 
 
-def new_matched_filter(template, data, GWsignal, det):
+def new_matched_filter(template, data, GWsignal, det, t_min, t_max):
     """Runs the matched filter calculation given a specific real template, strain
     data, time, psd, and sample rate. Finds the offset and phase to maximize
     SNR, as well as effective distance and horizon
@@ -44,13 +44,16 @@ def new_matched_filter(template, data, GWsignal, det):
     p_normalization_factor = np.sqrt(inner_product)
     #normalized template
     p = template / p_normalization_factor
-
+    # GWsignals = GWSignals(signal_ref_params['GWsignal'][1], GWsignal, 2.4, 2.5)
     # time shifts to search over for optimization
-    time_shifts = waveform.times_full - waveform.times_full[0]
+   # time_shifts = waveform.times_full - waveform.times_full[0]
+    
+    time_shifts = np.linspace(t_min, t_max, 100) # try to make this around the opt time shift 
+    # 150914 is 2.4 to  2.5 do 100 times
 
     # for taking the fft of our template and data
     dwindow= tukey(data.size, alpha= 1./4)
-    data_FD = np.fft.rfft(data*dwindow) * dt
+    data_FD = np.fft.rfft(data*dwindow) * c.dt
     
     # time shifts in frequency-domain (complex phase)
     time_shift_in_FD = np.exp(2. * np.pi * 1.j * c.freqs[:, None] * time_shifts[None, :])
@@ -78,7 +81,7 @@ def new_matched_filter(template, data, GWsignal, det):
     return SNRmax, opt_time_shift, opt_amplitude, opt_phase, p
 
 
-def opt_template(template, GWsignal, det):
+def opt_template(template, GWsignal, det, t_min, t_max):
     # template should be normalized template p
 
     # import GWsignal dictionary
@@ -99,7 +102,7 @@ def opt_template(template, GWsignal, det):
     strain_whitenbp = GWsignal[det]['strain_whitenbp'][time_filter_window]
 
 
-    SNRmax, opt_time_shift, opt_amplitude, opt_phase, p = new_matched_filter(template, strain, GWsignal, det)
+    SNRmax, opt_time_shift, opt_amplitude, opt_phase, p = new_matched_filter(template, strain, GWsignal, det, t_min, t_max)
 
     # get frequencies of our data
     datafreq= c.freqs
@@ -128,7 +131,7 @@ def opt_template(template, GWsignal, det):
 
 # # wrapper function for matched filter
 def wrapped_matched_filter(params, GW_signal, det):
-     return opt_template(get_template(params, GW_signal.dictionary), GW_signal.dictionary, det)
+     return opt_template(get_template(params, GW_signal.dictionary), GW_signal.dictionary, det, GW_signal.t_min, GW_signal.t_max)
 
 # def residual_func(data, fit):
 #     return data-fit

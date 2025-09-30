@@ -226,7 +226,7 @@ def calculate_matched_filter(template, total_data, det, t_amount=4):
 
 # wrapper function for matched filter
 def wrapped_matched_filter(params, GW_signal, det):
-    return opt_template(get_template(params, GW_signal.dictionary), GW_signal.dictionary, det)
+    return opt_template(get_template(params, GW_signal.dictionary), GW_signal.dictionary, det, GW_signal.t_min, GW_signal.t_max)
 
 def residual_func(data, fit):
     return data-fit
