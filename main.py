@@ -37,7 +37,7 @@ residual_line.set_visible(False)
 ax.set_xlabel('time [s]')
 ax.set_ylabel('strain')
 ax.legend(loc='upper left')
-ax.set_xlim(-0.15, 0.)
+ax.set_xlim(0.30, 0.50)
 
 # make error message if spins are outside domain
 error_text = fig.text(0.05, 0.1, 'Spins not in domain.', transform=ax.transAxes, fontsize=10)
@@ -60,7 +60,7 @@ def checkbox_update(val):
      # update label
     data_line.set_label(f'{det} data')
     # check if using real data or not
-    real_data_checked = checkboxes.get_status()[2]
+    real_data_checked = checkboxes.get_status()[2]  
     residuals_checked= checkboxes.get_status()[4]
     if not real_data_checked:
         global GW_signal
@@ -89,7 +89,7 @@ def checkbox_update(val):
     # Rebuild legend in same location
     ax.legend(loc='upper left')
     # make new slider
-    slider_axes, sliders = make_sliders(fig, checkboxes, GW_signal.comp_params, init_params)
+    slider_axes, sliders = make_sliders(fig, checkboxes, GW_signal.comp_params, slider_val)
     # remove initial position ticks on each slider
     for slider in sliders:
         slider.ax.get_lines()[0].set_visible(False)
@@ -111,7 +111,7 @@ def slider_update(val):
     params = get_comp_params(sliders)
     # check if spins are in domain
     if params[2] < chi1_min or params[2] > chi1_max or params[3] < chi2_min or params[3] > chi2_max:
-        fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
+        fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(params, GW_signal, det)
         zero_fit = np.zeros_like(data)
         fit_line.set_data(times, zero_fit)
         residuals = residual_func(data, zero_fit)
@@ -279,6 +279,7 @@ def button_push_signals6(event):
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
     residuals= residual_func(data, fit)
     data_line.set_xdata(times)
+    data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
     button_push(event)
@@ -318,15 +319,15 @@ sliders[3].on_changed(slider_update)
 # update plots when checkboxes changed
 checkboxes.on_clicked(checkbox_update)
 
-def btn_push_sig(event, signal):
-    data_line.set_xdata(times)
-    data_line.set_ydata(data)
-    residual_line.set_xdata(times)
-    residual_line.set_ydata(residuals)
+# def btn_push_sig(event, signal):
+#     data_line.set_xdata(times)
+#     data_line.set_ydata(data)
+#     residual_line.set_xdata(times)
+#     residual_line.set_ydata(residuals)
         
-    checkbox_update(event)
-    fig.canvas.draw_idle()
-    return
+#     checkbox_update(event)
+#     fig.canvas.draw_idle()
+#     return
 
 
 

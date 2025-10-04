@@ -125,7 +125,12 @@ def opt_template(template, GWsignal, det, t_min, t_max):
     # get whitened template in TD 
     opt_template_TD = np.fft.irfft(opt_template_FD_whitened, waveform.times_full.shape[0]) *4*np.sqrt(fs)
 
-    return  opt_template_TD, strain_whitenbp, time_filtered - time_center, SNRmax, opt_amplitude, opt_phase
+    opt_TD_template_unwhitened= np.fft.irfft(opt_template_FD, waveform.times_full.shape[0]) *4*np.sqrt(fs)
+
+    temp_max = np.max(np.abs(opt_TD_template_unwhitened))
+    
+
+    return  opt_template_TD, strain_whitenbp, time_filtered - time_center, SNRmax, temp_max, opt_phase
 
 
 

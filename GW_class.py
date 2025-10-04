@@ -79,7 +79,7 @@ GW190519= GWSignals(signal_ref_params['GW190519'][1], GW190519_data, 2.0, 2.2)
 
 # GW_simulated = GWSignals(signal_ref_params['GW150914'][1], GW150914_data)
 
-GW_simulated = GWSignals(np.array([30., 20., 0., 0.]), simulated_data, -0.1, 0.1)
+GW_simulated = GWSignals(signal_ref_params['GW150914'][1], GW150914_data, 2.4, 2.5)
 
 
 
