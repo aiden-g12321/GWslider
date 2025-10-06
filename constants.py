@@ -1,7 +1,6 @@
 '''This file stores constants used throughout the slider program.'''
 
 import pickle
-from numpy.fft import rfftfreq
 import numpy as np
 from pycbc.conversions import mchirp_from_mass1_mass2, chi_eff, chi_a
 
@@ -12,7 +11,7 @@ G = 6.67430e-11  # Newton's gravitational constant
 Msun = 1.989e30  # mass of the Sun in kg
 pc_SI = 3.08567758128e+16  # number of meters in one parsec
 
-# Simulated Data parameters
+# # Simulated Data parameters
 m1_inj = 50.
 m2_inj = 30.
 chi1_inj = 0.3

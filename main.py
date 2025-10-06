@@ -29,7 +29,7 @@ init_params = get_comp_params(sliders)
 
 # plot data and fit
 fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
-residuals= residual_func(data, fit)
+residuals = data - fit
 data_line, = ax.plot(times, data, color='Black', label=f'{det} data', alpha=0.5)
 fit_line, = ax.plot(times, fit, color='C2', label='fit')
 residual_line, = ax.plot(times, residuals, color= 'steelblue', alpha= 0.8,label= 'residual')
@@ -73,7 +73,7 @@ def checkbox_update(val):
         ax.set_ylim(-1.1 * ymax, 1.1 * ymax)
     if residuals_checked:
         fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(slider_val, GW_signal, det)
-        residuals= residual_func(data, fit)
+        residuals= data - fit
         residual_line.set_xdata(times)
         residual_line.set_ydata(residuals)
         residual_line.set_visible(True)
@@ -114,13 +114,13 @@ def slider_update(val):
         fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(params, GW_signal, det)
         zero_fit = np.zeros_like(data)
         fit_line.set_data(times, zero_fit)
-        residuals = residual_func(data, zero_fit)
+        residuals = data - zero_fit
         residual_line.set_data(times, residuals)
         error_text.set_visible(True)
         chi_text.set_visible(False)
     elif real_data_checked:
         fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(params, GW_signal, det)
-        residuals = residual_func(data, fit)
+        residuals = data - fit
         sliders[4].set_val(amp)
         sliders[5].set_val(phase)
         fit_line.set_ydata(fit)
@@ -130,7 +130,7 @@ def slider_update(val):
         chi_text.set_text(rf'$\rho = {round(SNRmax, 3)}$')
     else:
         fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(params, GW_signal, det)
-        residuals= residual_func(data, fit)
+        residuals = data - fit
         sliders[4].set_val(amp)
         sliders[5].set_val(phase)
         fit_line.set_ydata(fit)
@@ -169,7 +169,7 @@ def button_push_signals(event):
     GW_signal =  GW150914
     on_button_click(event, buttons)
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
-    residuals= residual_func(data, fit)
+    residuals = data - fit
     data_line.set_xdata(times)
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
@@ -187,7 +187,7 @@ def button_push_signals1(event):
     GW_signal=  GW190521
     on_button_click(event, buttons1)
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
-    residuals= residual_func(data, fit)
+    residuals = data - fit
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
     data_line.set_xdata(times)
@@ -207,7 +207,7 @@ def button_push_signals2(event):
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
     data_line.set_xdata(times)
     data_line.set_ydata(data)
-    residuals= residual_func(data, fit)
+    residuals = data - fit
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
     button_push(event)
@@ -223,7 +223,7 @@ def button_push_signals3(event):
     GW_signal = GW200224
     on_button_click(event, buttons3)
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
-    residuals= residual_func(data, fit)
+    residuals = data - fit
     data_line.set_xdata(times)
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
@@ -241,7 +241,7 @@ def button_push_signals4(event):
     GW_signal = GW200311
     on_button_click(event, buttons4)
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
-    residuals= residual_func(data, fit)
+    residuals = data - fit
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
     data_line.set_xdata(times)
@@ -259,7 +259,7 @@ def button_push_signals5(event):
     GW_signal = GW191109
     on_button_click(event, buttons5)
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
-    residuals= residual_func(data, fit)
+    residuals = data - fit
     data_line.set_xdata(times)
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
@@ -277,7 +277,7 @@ def button_push_signals6(event):
     GW_signal = GW190828
     on_button_click(event, buttons6)
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
-    residuals= residual_func(data, fit)
+    residuals = data - fit
     data_line.set_xdata(times)
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
@@ -295,7 +295,7 @@ def button_push_signals7(event):
     GW_signal = GW190519
     on_button_click(event, buttons7)
     fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(init_params, GW_signal, det)
-    residuals= residual_func(data, fit)
+    residuals = data - fit
     data_line.set_xdata(times)
     data_line.set_ydata(data)
     residual_line.set_xdata(times)

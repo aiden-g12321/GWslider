@@ -1,12 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import trapezoid as integrate
-from scipy.interpolate import interp1d
 from pycbc.conversions import mchirp_from_mass1_mass2, spin1z_from_mass1_mass2_chi_eff_chi_a, spin2z_from_mass1_mass2_chi_eff_chi_a
-from pycbc.conversions import mass1_from_mchirp_q, mass2_from_mchirp_q
 from constants import *
-from template import waveform
-from matched_filter import *
 import pickle
 from signal_processing import *
 
