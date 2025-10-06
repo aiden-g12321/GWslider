@@ -69,7 +69,7 @@ def checkbox_update(val):
         data_line.set_xdata(times)
         data_line.set_ydata(data)
         ymax = np.max(np.abs(data))
-        ax.set_xlim(-0.15, 0.)
+        ax.set_xlim(0.30, 0.50)
         ax.set_ylim(-1.1 * ymax, 1.1 * ymax)
     if residuals_checked:
         fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(slider_val, GW_signal, det)
