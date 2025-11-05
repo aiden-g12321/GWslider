@@ -62,6 +62,7 @@ def checkbox_update(val):
     # check if using real data or not
     real_data_checked = checkboxes.get_status()[2]  
     residuals_checked= checkboxes.get_status()[4]
+
     if not real_data_checked:
         global GW_signal
         GW_signal = GW_simulated
@@ -174,7 +175,7 @@ def button_push_signals(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    button_push(event)
+    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(0.30, 0.5)
@@ -192,7 +193,7 @@ def button_push_signals1(event):
     residual_line.set_ydata(residuals)
     data_line.set_xdata(times)
     data_line.set_ydata(data)
-    button_push(event)
+    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.05, 0.15)
@@ -210,7 +211,7 @@ def button_push_signals2(event):
     residuals = data - fit
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    button_push(event)
+    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.10, 0.10)
@@ -228,7 +229,7 @@ def button_push_signals3(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    button_push(event)
+    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.10, 0.10)
@@ -246,7 +247,7 @@ def button_push_signals4(event):
     residual_line.set_ydata(residuals)
     data_line.set_xdata(times)
     data_line.set_ydata(data)
-    button_push(event)
+    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.10, 0.2)
@@ -264,7 +265,7 @@ def button_push_signals5(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    button_push(event)
+    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.10, 0.10)
@@ -282,7 +283,7 @@ def button_push_signals6(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    button_push(event)
+    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.15, 0.15)
@@ -300,7 +301,7 @@ def button_push_signals7(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    button_push(event)
+    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.05, 0.2)
