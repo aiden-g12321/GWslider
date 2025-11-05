@@ -7,3 +7,4 @@ PyCBC==2.7.2
 readligo==0.6.1
 scipy == 1.15.3
 wget==3.2
+ipympl==0.9.4
