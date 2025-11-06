@@ -10,10 +10,13 @@ dependencies:
   - numba==0.60.0
   - numpy>=1.22,<2.1
   - pycbc==2.7.2
-  - readligo==0.6.1
   - scipy==1.15.3
-  - wget==3.2
   - ipympl==0.9.4
   - ipywidgets>=8.0
   - jupyterlab
   - notebook
+  - pip
+  - pip:
+      - readligo==0.6.1
+      - wget==3.2
+
