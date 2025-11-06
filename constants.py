@@ -25,8 +25,6 @@ num_params = len(params_inj)
 
 # reference parameters for real data
 # FORMAT -- 'GW name': [GPS event time, [mass1, mass2, spin plus, spin minus]]
-
-#GW signals to add: 200112*, 191109, 190828, 190521, 190519, 190630*
 signal_ref_params = {'GW150914': [1126259462.4, [38.8, 33.4, -0.01, 0.0]],
                      'GW200129': [1264316116.4, [40.7, 34.2, 0.11, 0.0]],
                      'GW190521': [1242459857.4, [52.5, 40.4, 0.10, 0.0]],
@@ -71,54 +69,38 @@ DL_SI = DL * (1.e6) * pc_SI
 
 
 # set window size for plotting and generating waveforms
-#window_min = -0.22  # plot beginning 0.2 sec before merger
-#window_max = 0.03  # plot ending 0.05 sec after merger
-
 window_min = -0.32
 window_max= 0.32
 
 # define frequency bins
 f_min = 16.
-#f_max = 1024.
 f_max= 2048.
-#Nf = 2**14 + 1
 
 
 
-#get data freq
+
+#load dictionary to pull time domain info 
 with open('data/GW150914_data_dict.pkl', 'rb') as f:
     GW150914_data = pickle.load(f)
-#choose detector 
+#choose intial detector 
 det= 'H1'
 #get time domain info from dictionary
 dt = GW150914_data['dt']
 fs = GW150914_data['fs']
 strain = GW150914_data[det]['strain']
 N = len(strain)
-#Nf= 65537
 Nf = int(N/2 + 1)
+
+#get frequency info
 freqs_full = np.linspace(0., f_max, Nf)
 freqs_indexes = np.where(freqs_full > f_min)
-#data frequencies
-#freqs= np.fft.fftfreq(N, dt) 
-
 freqs= np.load('freqs.npy')
-#freqs= rfftfreq(N,dt)
+#frequencies for full waveform
 freqs_for_waveform = freqs[np.where(freqs>f_min)]
-
-#attempt at padding freqs
+#frequencies for creating template
 freqs_padded = freqs_full.copy()
 freqs_padded[freqs_padded < f_min] = 0.0
-
-#freqs = freqs_full[freqs_indexes]
-#df = freqs[1] - freqs[0]
 df = np.abs(freqs[1] - freqs[0])
-#df= 1/(N*dt)
-
-# bandpass frequencies 
-# these specific values are defined in the paper
-#fband = [35.0, 350.0]
-#mask = (np.abs(freqs) >= fband[0] & (np.abs(freqs) <= fband[[1]]))
 
 # checkbox rectangle for plotting
 checkbox_rect = [0.05, 0.75, 0.2, 0.2]

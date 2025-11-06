@@ -79,11 +79,11 @@ class Waveform:
 
         # apply hyperbolic tangent window
         windowed_waveform_FD = self.tanh_window * waveform_FD
-        # pad with zeros down to DC component
 
+        # pad with zeros down to DC component
         full_FD_waveform = np.zeros(self.num_freqs, dtype='complex')
         full_FD_waveform[-self.num_freqs_waveform:] = windowed_waveform_FD
-        #full_FD_waveform[-self.num_freqs_waveform:] = waveform_FD
+        
         return full_FD_waveform
 
 
@@ -91,16 +91,9 @@ class Waveform:
     def iFFT_waveform(self, waveform_FD):
         waveform_TD = np.fft.irfft(waveform_FD) 
         # set merger to t = 0
-        #waveform_TD = np.roll(waveform_TD, self.merger_index - np.argmax(waveform_TD))[:self.Nt]
         waveform_TD = np.roll(waveform_TD, self.merger_index - np.argmax(waveform_TD))
         return waveform_TD
     
-
-    # # get signal in time-domain given parameters
-    # def get_TD_waveform(self, params, phic):
-    #     waveform_FD = self.get_FD_waveform(params, phic)
-    #     return self.iFFT_waveform(waveform_FD)
-
 
 # instantiate waveform class for frequency bins (defined in constants.py)
 waveform = Waveform(c.freqs, c.freqs_for_waveform)
@@ -110,31 +103,9 @@ def get_template(comp_params, data_dict):
     dt = data_dict['dt']
     fs = data_dict['fs']
 
+    # template to be plotted
     fig_template_tapered = waveform.get_FD_waveform(comp_params, 0.) 
-    # fig_template = np.array([waveform.times, waveform.get_TD_waveform(comp_params, 0.0)]).T 
-    # times_interp = np.linspace(waveform.times[0], waveform.times[-1], 6000)
-    # waveform_interp = interp1d(fig_template[:, 0], fig_template[:, 1])(times_interp)
-    # fig_template = np.array([times_interp, waveform_interp]).T[-3440:]
-    # fig_template = fig_template[:, 1]
 
-    # Downsample this data to 4096 Hz
-    # fig_template = resample(fig_template, int(len(fig_template)/4) )
-
-    # apply a Tukey window to taper the ends of the template
-    ##taper_window = tukey(len(fig_template), alpha=.25)
-    ##fig_template_tapered = fig_template* taper_window
-
-    # -- Plot template before and after tapering
-    ##template_time = np.arange(0.25, 0.25+len(fig_template_tapered)*dt,dt)
-
-    # # Now we need to pad this with 0s to make it the same amount of time as the data
-    # halfdatalen = int(16*fs)
-    # begin_add = halfdatalen - len(fig_template_tapered)
-
-    # # add last 2048 seconds
-    # fig_template_tapered = np.append(fig_template_tapered, (halfdatalen * [0]))
-    # # add beginning- almost 2048 seconds
-    # fig_template_tapered = np.append((int(begin_add) * [0]), fig_template_tapered)
 
     return fig_template_tapered
 

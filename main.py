@@ -15,7 +15,6 @@ checkboxes, buttons, buttons1, buttons2, buttons3, buttons4, buttons5, buttons6,
 
 # start off using simulated data
 GW_signal = GW_simulated
-# GW_signal= GW150914
 # start off with Hanford detector 
 det = 'H1'
 # make sliders
@@ -62,7 +61,7 @@ def checkbox_update(val):
     # check if using real data or not
     real_data_checked = checkboxes.get_status()[2]  
     residuals_checked= checkboxes.get_status()[4]
-
+    # ensure parameters and plot don't update when checkboxes clicked
     if not real_data_checked:
         global GW_signal
         GW_signal = GW_simulated
@@ -72,6 +71,7 @@ def checkbox_update(val):
         ymax = np.max(np.abs(data))
         ax.set_xlim(0.30, 0.50)
         ax.set_ylim(-1.1 * ymax, 1.1 * ymax)
+    # show residuals plot when checkbox clicked
     if residuals_checked:
         fit, data, times, SNRmax, amp, phase = wrapped_matched_filter(slider_val, GW_signal, det)
         residuals= data - fit
@@ -100,7 +100,6 @@ def checkbox_update(val):
     sliders[2].on_changed(slider_update)
     sliders[3].on_changed(slider_update)
     # update data plotted
-    # error_text.set_visible(True)
     slider_update(val)
     fig.canvas.draw_idle()
     return
@@ -165,6 +164,7 @@ def button_push(event):
     fig.canvas.draw_idle()
     return
 
+# function to update plot when GW150914 button clicked
 def button_push_signals(event):
     global GW_signal
     GW_signal =  GW150914
@@ -175,7 +175,6 @@ def button_push_signals(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(0.30, 0.5)
@@ -183,6 +182,7 @@ def button_push_signals(event):
     fig.canvas.draw_idle()
     return 
 
+# function to update plot when GW190521 button clicked
 def button_push_signals1(event):
     global GW_signal
     GW_signal=  GW190521
@@ -193,7 +193,6 @@ def button_push_signals1(event):
     residual_line.set_ydata(residuals)
     data_line.set_xdata(times)
     data_line.set_ydata(data)
-    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.05, 0.15)
@@ -201,6 +200,7 @@ def button_push_signals1(event):
     fig.canvas.draw_idle()
     return 
 
+# function to update plot when GW200129 button clicked
 def button_push_signals2(event):
     global GW_signal
     GW_signal = GW200129
@@ -211,7 +211,6 @@ def button_push_signals2(event):
     residuals = data - fit
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.10, 0.10)
@@ -219,6 +218,7 @@ def button_push_signals2(event):
     fig.canvas.draw_idle()
     return 
 
+# function to update plot when GW200224 button clicked
 def button_push_signals3(event):
     global GW_signal
     GW_signal = GW200224
@@ -229,7 +229,6 @@ def button_push_signals3(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.10, 0.10)
@@ -237,6 +236,7 @@ def button_push_signals3(event):
     fig.canvas.draw_idle()
     return 
 
+# function to update plot when GW200311 button clicked
 def button_push_signals4(event):
     global GW_signal
     GW_signal = GW200311
@@ -247,7 +247,6 @@ def button_push_signals4(event):
     residual_line.set_ydata(residuals)
     data_line.set_xdata(times)
     data_line.set_ydata(data)
-    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.10, 0.2)
@@ -255,6 +254,7 @@ def button_push_signals4(event):
     fig.canvas.draw_idle()
     return 
 
+# function to update plot when GW191109 button clicked
 def button_push_signals5(event):
     global GW_signal
     GW_signal = GW191109
@@ -265,7 +265,6 @@ def button_push_signals5(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.10, 0.10)
@@ -273,6 +272,7 @@ def button_push_signals5(event):
     fig.canvas.draw_idle()
     return 
 
+# function to update plot when GW190828 button clicked
 def button_push_signals6(event):
     global GW_signal
     GW_signal = GW190828
@@ -283,7 +283,6 @@ def button_push_signals6(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.15, 0.15)
@@ -291,6 +290,7 @@ def button_push_signals6(event):
     fig.canvas.draw_idle()
     return 
 
+# function to update plot when GW190519 button clicked
 def button_push_signals7(event):
     global GW_signal
     GW_signal = GW190519
@@ -301,7 +301,6 @@ def button_push_signals7(event):
     data_line.set_ydata(data)
     residual_line.set_xdata(times)
     residual_line.set_ydata(residuals)
-    #button_push(event)
     checkbox_update(event)
     ymax = np.max(np.abs(data))
     ax.set_xlim(-0.05, 0.2)
@@ -320,18 +319,8 @@ sliders[3].on_changed(slider_update)
 # update plots when checkboxes changed
 checkboxes.on_clicked(checkbox_update)
 
-# def btn_push_sig(event, signal):
-#     data_line.set_xdata(times)
-#     data_line.set_ydata(data)
-#     residual_line.set_xdata(times)
-#     residual_line.set_ydata(residuals)
-        
-#     checkbox_update(event)
-#     fig.canvas.draw_idle()
-#     return
 
-
-
+# connect button push functions to buttons
 button.on_clicked(button_push)
 buttons.on_clicked(button_push_signals)
 buttons1.on_clicked(button_push_signals1)

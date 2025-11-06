@@ -5,8 +5,8 @@ import numpy as np
 from scipy.signal.windows import tukey
 from template import *
 
-
-def new_matched_filter(template, data, GWsignal, det, simulated=False):
+# matched filter function
+def matched_filter(template, data, GWsignal, det, simulated=False):
 
     # spacing between frequency bins
     df = c.freqs[1] - c.freqs[0]
@@ -27,7 +27,9 @@ def new_matched_filter(template, data, GWsignal, det, simulated=False):
     if simulated:
         data_FD = GWsignal[det]['data_FD']
     else:
+        # window real data to reduce spectral leakage
         dwindow= tukey(data.size, alpha= 1./4)
+        # fft real data
         data_FD = np.fft.rfft(data*dwindow) * c.dt
     
     # do Fourier transform
@@ -43,16 +45,14 @@ def new_matched_filter(template, data, GWsignal, det, simulated=False):
     
     return SNRmax, opt_time_shift, opt_amplitude, opt_phase, p
 
-
+# apply matched filter
 def opt_template(template, GWsignal, det, simulated=False):
-    # template should be normalized template p
-
+    
     # import GWsignal dictionary
     time = GWsignal['time']
     time_center = GWsignal['time_center']
     fs = GWsignal['fs']
     
-
     # amount of data we want to calculate matched filter SNR over- up to 32s
     data_time_window = time[len(time) - 1] - time[0] - (32 - 4)
 
@@ -67,9 +67,8 @@ def opt_template(template, GWsignal, det, simulated=False):
     else:
         strain_whitenbp = GWsignal[det]['strain_whitenbp'][time_filter_window]
 
-
     # do matched filter
-    SNRmax, opt_time_shift, opt_amplitude, opt_phase, p = new_matched_filter(template, strain, GWsignal, det, simulated)
+    SNRmax, opt_time_shift, opt_amplitude, opt_phase, p = matched_filter(template, strain, GWsignal, det, simulated)
 
     # get psd values from data dictionary
     psd_func = GWsignal['large_data_psds'][det]
@@ -90,7 +89,8 @@ def opt_template(template, GWsignal, det, simulated=False):
     opt_template_TD = np.fft.irfft(opt_template_FD_whitened, waveform.times_full.shape[0]) *4*np.sqrt(fs)
 
     opt_TD_template_unwhitened= np.fft.irfft(opt_template_FD, waveform.times_full.shape[0]) *4*np.sqrt(fs)
-
+    
+    # ampltitude
     temp_max = np.max(np.abs(opt_TD_template_unwhitened))
     
 

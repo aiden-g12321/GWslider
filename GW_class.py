@@ -13,18 +13,16 @@ class GWSignals:
         self.t_min = t_min
         self.t_max = t_max
         # reference parameters
-        #add amplitude into reference params 
         self.mass1, self.mass2, self.chiPlus, self.chiMinus = ref_params
         self.chirp = mchirp_from_mass1_mass2(self.mass1, self.mass2)
         self.ratio = self.mass2 / self.mass1
         self.chi1 = spin1z_from_mass1_mass2_chi_eff_chi_a(self.mass1, self.mass2, self.chiPlus, self.chiMinus)
         self.chi2 = spin2z_from_mass1_mass2_chi_eff_chi_a(self.mass1, self.mass2, self.chiPlus, self.chiMinus)  
         self.comp_params = np.array([self.mass1, self.mass2, self.chi1, self.chi2])
-
+        # simulated parameters
         self.simulated = simulated
 
         # minimum / maximum mass parameters for sliders
-        #add amp range here
         self.min_mass1 = self.mass1 - 5.0
         self.min_mass2 = self.mass2 - 5.0
         self.max_mass1 = self.mass1 + 5.0
@@ -73,8 +71,8 @@ GW191109 = GWSignals(signal_ref_params['GW191109'][1], GW191109_data, 1.95, 2.1)
 GW190828= GWSignals(signal_ref_params['GW190828'][1], GW190828_data, 2.0, 2.1)
 GW190519= GWSignals(signal_ref_params['GW190519'][1], GW190519_data, 2.0, 2.2)
 
-# GW_simulated = GWSignals(signal_ref_params['GW150914'][1], GW150914_data)
 
+# class instantiation for simulated data
 GW_simulated = GWSignals(signal_ref_params['GW150914'][1], simulated_data, 2.4, 2.5, simulated=True)
 
 

@@ -8,8 +8,6 @@ import constants as c
 
 
 def whiten(template_FD, interp_psd, dt, phase_shift=0, time_shift=0):
-    #change first input (strain) to FD waveform 
-
     """Whitens strain data given the psd and sample rate, also applying a phase
     shift and time shift.
 
@@ -24,20 +22,13 @@ def whiten(template_FD, interp_psd, dt, phase_shift=0, time_shift=0):
     Returns:
         ndarray: array of whitened strain data
     """
-    #Nt = len(strain)
-    # take the fourier transform of the data
-    #freqs = np.fft.rfftfreq(Nt, dt)
-
-    # whitening: transform to freq domain, divide by square root of psd, then
-    # transform back, taking care to get normalization right.
-    #hf = np.fft.rfft(strain)
-    hf= template_FD  
+    # get frequencies
     freqs = c.freqs
 
-    
     # apply time and phase shift
     hf = hf * np.exp(-1.j * 2 * np.pi * time_shift * freqs - 1.j * phase_shift)
 
+    # normalize and whiten templates
     norm = 1./np.sqrt(1./(dt*2))
     white_hf = hf / np.sqrt(interp_psd(freqs)) * norm
     white_ht = np.fft.irfft(white_hf, n= len(white_hf)*2-1)
@@ -55,7 +46,7 @@ def bandpass(strain, fband, fs):
     Returns:
         ndarray: array of bandpassed strain data
     """
-
+    # apply bandpass between 35 and 350 HZ
     bb, ab = butter(4, [fband[0]*2./fs, fband[1]*2./fs], btype='band')
     normalization = np.sqrt((fband[1]-fband[0])/(fs/2))
     strain_bp = filtfilt(bb, ab, strain) / normalization

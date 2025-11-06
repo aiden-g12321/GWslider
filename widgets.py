@@ -13,7 +13,7 @@ def remove_sliders(slider_axes, sliders):
         ax.remove()
     for slider in sliders:
         slider.disconnect_events()
-
+# instatiate detector 
 det_state = {'det': 'H1'}
 # function to make checkboxes
 def make_checkboxes(fig):
@@ -91,8 +91,8 @@ def make_checkboxes(fig):
     # Dropdown selection 
     def on_select(signal_name):
         print(f"Selected GW signal: {signal_name}")
-        # Add your logic to update plot or data here
 
+    # connect buttons 
     buttons.on_clicked(on_select)
     buttons1.on_clicked(on_select)
     buttons2.on_clicked(on_select)
@@ -141,7 +141,6 @@ def make_sliders(fig, checkboxes, true_comp_params, init_comp_params= None):
         slider1 = Slider(ax=ax1, label=m1_label, valmin=m1_true - 10, valmax=m1_true + 10, valinit= m1_init, color= 'C2')
         slider2 = Slider(ax=ax2, label=m2_label, valmin=m2_true - 10, valmax=m2_true + 10, valinit= m2_init,  color= 'C2')
     if plus_minus_checked:
-    
         slider3 = Slider(ax=ax3, label=spin_plus_label, valmin=spin_plus_min, valmax=spin_plus_max, valinit= spin_plus_init,  color= 'C2')
         slider4 = Slider(ax=ax4, label=spin_minus_label, valmin=spin_minus_min, valmax=spin_minus_max, valinit= spin_minus_init,  color= 'C2')
     else:
