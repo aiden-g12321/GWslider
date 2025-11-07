@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from widgets import *
 from matched_filter import *
 from GW_class import *
+plt.close('all') 
+
 
 # setup main plot
 fig, ax = plt.subplots(figsize=(12, 8))
